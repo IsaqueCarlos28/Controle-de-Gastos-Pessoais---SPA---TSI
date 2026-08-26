@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <!-- Configurações básicas da página -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Conexão antecipada com servidores de fontes (melhora performance) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Importação da fonte Roboto Mono -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+
+    <!-- Arquivo de estilos CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Título da aba do navegador -->
+    <title>Meus Gastos</title>
+</head>
+
+<body>
+
+    <!-- Container principal da aplicação -->
+    <main class="container">
+
+        <!-- Cabeçalho -->
+        <header class="header">
+            <h1>Meus gastos</h1>
+            <p>Controle suas finanças de forma moderna e eficiente</p>
+        </header>
+
+        <!-- Seção de estatísticas -->
+        <section class="stats">
+
+            <!-- Saldo atual -->
+            <div class="card">
+                <span class="number">R$ 1.240</span>
+                <span class="label">Saldo</span>
+            </div>
+
+            <!-- Total de receitas -->
+            <div class="card">
+                <span class="number blue">R$ 3.500</span>
+                <span class="label">Receitas</span>
+            </div>
+
+            <!-- Total de despesas -->
+            <div class="card">
+                <span class="number pink">R$ 2.260</span>
+                <span class="label">Despesas</span>
+            </div>
+
+        </section>
+
+        <!-- Área para adicionar novo lançamento -->
+        <section class="add-task">
+
+            <!-- Campo de descrição -->
+            <input
+                type="text"
+                placeholder="Descrição do gasto..."
+            />
+
+            <!-- Campo de valor -->
+            <input
+                type="text"
+                class="input-value"
+                placeholder="R$ 0,00"
+            />
+
+            <!-- Botão de adicionar -->
+            <button class="btn-add">
+                + Adicionar
+            </button>
+
+        </section>
+
+        <!-- Filtros de visualização dos lançamentos -->
+        <section class="filters">
+
+            <!-- Mostrar todos -->
+            <button class="filter active">
+                Todos
+            </button>
+
+            <!-- Mostrar apenas receitas -->
+            <button class="filter">
+                Receitas
+            </button>
+
+            <!-- Mostrar apenas despesas -->
+            <button class="filter">
+                Despesas
+            </button>
+
+        </section>
+
+        <!-- Lista de lançamentos -->
+        <section class="tasks">
+
+            <!-- Lançamento de receita -->
+            <div class="transaction-income">
+                <div class="transaction-info">
+                    <span class="transaction-title">Salário</span>
+                    <span class="transaction-date">01 ago · Receita</span>
+                </div>
+                <span class="transaction-amount income">+ R$ 3.500,00</span>
+            </div>
+
+            <!-- Lançamento de despesa -->
+            <div class="transaction-expense">
+                <div class="transaction-info">
+                    <span class="transaction-title">Supermercado</span>
+                    <span class="transaction-date">05 ago · Alimentação</span>
+                </div>
+                <span class="transaction-amount expense">- R$ 460,00</span>
+            </div>
+
+            <!-- Outra despesa -->
+            <div class="transaction-expense">
+                <div class="transaction-info">
+                    <span class="transaction-title">Assinatura streaming</span>
+                    <span class="transaction-date">10 ago · Lazer</span>
+                </div>
+                <span class="transaction-amount expense">- R$ 39,90</span>
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+</html>
