@@ -35,96 +35,96 @@
 
             <!-- Saldo atual -->
             <div class="card">
-                <span class="number">R$ 1.240</span>
+                <span id="balance" class="number">R$ 0,00</span>
                 <span class="label">Saldo</span>
             </div>
 
             <!-- Total de receitas -->
             <div class="card">
-                <span class="number blue">R$ 3.500</span>
+                <span id="income-total" class="number blue">R$ 0,00</span>
                 <span class="label">Receitas</span>
             </div>
 
             <!-- Total de despesas -->
             <div class="card">
-                <span class="number pink">R$ 2.260</span>
+                <span id="expense-total" class="number pink">R$ 0,00</span>
                 <span class="label">Despesas</span>
             </div>
 
         </section>
 
-        <!-- Área para adicionar novo lançamento -->
-        <section class="add-task">
+        <!-- Formulário de cadastro de novo lançamento -->
+        <form class="add-task" id="form-add">
 
             <!-- Campo de descrição -->
             <input
                 type="text"
+                id="description"
                 placeholder="Descrição do gasto..."
+                required
             />
 
             <!-- Campo de valor -->
             <input
-                type="text"
+                type="number"
+                id="amount"
                 class="input-value"
                 placeholder="R$ 0,00"
+                step="0.01"
+                min="0.01"
+                required
             />
 
+            <!-- Seleção de tipo: receita ou despesa -->
+            <select id="type" class="input-select">
+                <option value="income">Receita</option>
+                <option value="expense">Despesa</option>
+            </select>
+
+            <!-- Seleção de categoria -->
+            <select id="category" class="input-select">
+                <option value="salario">Salário</option>
+                <option value="alimentacao">Alimentação</option>
+                <option value="lazer">Lazer</option>
+                <option value="transporte">Transporte</option>
+                <option value="saude">Saúde</option>
+                <option value="outros">Outros</option>
+            </select>
+
             <!-- Botão de adicionar -->
-            <button class="btn-add">
+            <button type="submit" id="btn-add" class="btn-add">
                 + Adicionar
             </button>
 
-        </section>
+        </form>
 
         <!-- Filtros de visualização dos lançamentos -->
         <section class="filters">
 
-            <!-- Mostrar todos -->
-            <button class="filter active">
-                Todos
-            </button>
+            <!-- Filtro por tipo -->
+            <select id="filter-type" class="filter-select">
+                <option value="all">Todos os tipos</option>
+                <option value="income">Receitas</option>
+                <option value="expense">Despesas</option>
+            </select>
 
-            <!-- Mostrar apenas receitas -->
-            <button class="filter">
-                Receitas
-            </button>
-
-            <!-- Mostrar apenas despesas -->
-            <button class="filter">
-                Despesas
-            </button>
+            <!-- Filtro por categoria -->
+            <select id="filter-category" class="filter-select">
+                <option value="all">Todas as categorias</option>
+                <option value="salario">Salário</option>
+                <option value="alimentacao">Alimentação</option>
+                <option value="lazer">Lazer</option>
+                <option value="transporte">Transporte</option>
+                <option value="saude">Saúde</option>
+                <option value="outros">Outros</option>
+            </select>
 
         </section>
 
         <!-- Lista de lançamentos -->
-        <section class="tasks">
+        <section id="transactions" class="tasks">
 
-            <!-- Lançamento de receita -->
-            <div class="transaction-income">
-                <div class="transaction-info">
-                    <span class="transaction-title">Salário</span>
-                    <span class="transaction-date">01 ago · Receita</span>
-                </div>
-                <span class="transaction-amount income">+ R$ 3.500,00</span>
-            </div>
-
-            <!-- Lançamento de despesa -->
-            <div class="transaction-expense">
-                <div class="transaction-info">
-                    <span class="transaction-title">Supermercado</span>
-                    <span class="transaction-date">05 ago · Alimentação</span>
-                </div>
-                <span class="transaction-amount expense">- R$ 460,00</span>
-            </div>
-
-            <!-- Outra despesa -->
-            <div class="transaction-expense">
-                <div class="transaction-info">
-                    <span class="transaction-title">Assinatura streaming</span>
-                    <span class="transaction-date">10 ago · Lazer</span>
-                </div>
-                <span class="transaction-amount expense">- R$ 39,90</span>
-            </div>
+            <!-- Os lançamentos serão inseridos aqui dinamicamente via JavaScript -->
 
         </section>
 
