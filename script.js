@@ -72,3 +72,56 @@ function createTransaction(description, amount, type, category) {
         category
     };
 }
+
+/* ===================================
+   ADICIONAR LANÇAMENTO
+=================================== */
+
+/**
+ * Lê os dados do formulário, valida os campos e, se estiverem
+ * corretos, cria um novo lançamento e adiciona ao array `transactions`.
+ */
+function addTransaction() {
+    // 1. Ler descrição, valor, tipo e categoria
+    const description = descriptionInput.value.trim(); // 2. remove espaços extras
+    const amount = Number(amountInput.value);           // 3. converte o valor para número
+    const type = typeSelect.value;
+    const category = categorySelect.value;
+
+    // 4. Validar os campos
+    if (!description || !amount || amount <= 0 || !type || !category) {
+        return;
+    }
+
+    // 5. Criar o objeto do lançamento
+    const transaction = createTransaction(description, amount, type, category);
+
+    // 6. Adicionar o objeto ao array de lançamentos
+    transactions.push(transaction);
+
+    // 7. Limpar o formulário
+    formAdd.reset();
+
+    // 8. Atualizar a interface
+    updateInterface();
+}
+
+/**
+ * Atualiza a interface com base no estado atual de `transactions`
+ * (lista de lançamentos e totais de receitas/despesas/saldo).
+ * Implementação completa será feita na próxima etapa.
+ */
+function updateInterface() {
+    // TODO: renderizar a lista em #transactions e recalcular os totais
+}
+
+/* ===================================
+   EVENTOS
+=================================== */
+
+// Ao enviar o formulário, evita o recarregamento da página e
+// executa a lógica de adicionar um novo lançamento.
+formAdd.addEventListener('submit', (event) => {
+    event.preventDefault();
+    addTransaction();
+});
