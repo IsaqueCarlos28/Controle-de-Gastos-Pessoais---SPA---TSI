@@ -106,13 +106,104 @@ function addTransaction() {
     updateInterface();
 }
 
+/* ===================================
+   RENDERIZAÇÃO
+=================================== */
+
+// Formata números como moeda brasileira (R$)
+const currencyFormatter = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
+});
+
+// Rótulos legíveis para o tipo do lançamento
+const typeLabels = {
+    income: 'Receita',
+    expense: 'Despesa'
+};
+
+// Rótulos legíveis para as categorias (valores usados nos <option> do HTML)
+const categoryLabels = {
+    salario: 'Salário',
+    alimentacao: 'Alimentação',
+    lazer: 'Lazer',
+    transporte: 'Transporte',
+    saude: 'Saúde',
+    outros: 'Outros'
+};
+
+/**
+ * Cria o elemento HTML correspondente a um único lançamento.
+ * @param {{id: number, description: string, amount: number, type: string, category: string}} transaction
+ * @returns {HTMLElement}
+ */
+function createTransactionElement(transaction) {
+    const isIncome = transaction.type === 'income';
+
+    // Elemento raiz do lançamento (a cor/estilo muda via classe, ver style.css)
+    const item = document.createElement('div');
+    item.className = isIncome ? 'transaction-income' : 'transaction-expense';
+    item.dataset.id = transaction.id;
+
+    // Bloco de informações (descrição + tipo/categoria)
+    const info = document.createElement('div');
+    info.className = 'transaction-info';
+
+    const title = document.createElement('span');
+    title.className = 'transaction-title';
+    title.textContent = transaction.description;
+
+    const meta = document.createElement('span');
+    meta.className = 'transaction-date';
+    const categoryLabel = categoryLabels[transaction.category] || transaction.category;
+    meta.textContent = `${typeLabels[transaction.type] || transaction.type} · ${categoryLabel}`;
+
+    info.appendChild(title);
+    info.appendChild(meta);
+
+    // Valor formatado em moeda, com sinal indicando receita (+) ou despesa (-)
+    const amount = document.createElement('span');
+    amount.className = `transaction-amount ${isIncome ? 'income' : 'expense'}`;
+    const sign = isIncome ? '+ ' : '- ';
+    amount.textContent = sign + currencyFormatter.format(transaction.amount);
+
+    // Botão de remoção do lançamento
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.className = 'btn-remove';
+    removeBtn.dataset.id = transaction.id;
+    removeBtn.setAttribute('aria-label', `Remover lançamento: ${transaction.description}`);
+    removeBtn.textContent = '×';
+
+    item.appendChild(info);
+    item.appendChild(amount);
+    item.appendChild(removeBtn);
+
+    return item;
+}
+
+/**
+ * Renderiza todos os lançamentos de `transactions` dentro de
+ * #transactions, substituindo o conteúdo anterior para evitar
+ * duplicações a cada nova renderização.
+ */
+function renderTransactions() {
+    // Limpa o container antes de renderizar novamente (evita duplicação)
+    transactionsContainer.innerHTML = '';
+
+    transactions.forEach((transaction) => {
+        const element = createTransactionElement(transaction);
+        transactionsContainer.appendChild(element);
+    });
+}
+
 /**
  * Atualiza a interface com base no estado atual de `transactions`
  * (lista de lançamentos e totais de receitas/despesas/saldo).
- * Implementação completa será feita na próxima etapa.
  */
 function updateInterface() {
-    // TODO: renderizar a lista em #transactions e recalcular os totais
+    renderTransactions();
+    // TODO: recalcular e exibir os totais (#balance, #income-total, #expense-total)
 }
 
 /* ===================================
