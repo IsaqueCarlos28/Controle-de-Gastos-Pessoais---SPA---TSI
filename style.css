@@ -160,11 +160,11 @@ body {
 }
 
 .number.blue {
-    color: #5f96d3;
+    color: #4c78a8;
 }
 
 .number.pink {
-    color: #d4768f;
+    color: #a95e72;
 }
 
 .label {
@@ -381,6 +381,10 @@ body {
     background: linear-gradient(90deg, rgba(228, 247, 243, 0.76), rgba(255, 255, 255, 0.78));
 }
 
+.transaction-expense {
+    background: linear-gradient(90deg, rgba(253, 231, 238, 0.6), rgba(255, 255, 255, 0.78));
+}
+
 /* Informações do lançamento (título e data/categoria) */
 .transaction-info {
     display: flex;
@@ -411,11 +415,11 @@ body {
 }
 
 .transaction-amount.income {
-    color: #4da999;
+    color: #397e72;
 }
 
 .transaction-amount.expense {
-    color: #d4768f;
+    color: #a95e72;
 }
 
 /* Estado vazio da lista de lançamentos */
