@@ -183,18 +183,106 @@ function createTransactionElement(transaction) {
 }
 
 /**
- * Renderiza todos os lançamentos de `transactions` dentro de
- * #transactions, substituindo o conteúdo anterior para evitar
- * duplicações a cada nova renderização.
+ * Retorna um NOVO array com o subconjunto de `transactions` que
+ * corresponde aos filtros selecionados (tipo e categoria).
+ * Não altera `transactions` em nenhum momento — apenas lê os valores
+ * dos <select> de filtro e devolve uma cópia filtrada.
+ * @returns {Array} lançamentos filtrados para exibição
+ */
+function getFilteredTransactions() {
+    const selectedType = filterType.value;
+    const selectedCategory = filterCategory.value;
+
+    return transactions.filter((transaction) => {
+        // 'all' significa "não filtrar por este campo"
+        const matchesType = selectedType === 'all' || transaction.type === selectedType;
+        const matchesCategory = selectedCategory === 'all' || transaction.category === selectedCategory;
+
+        return matchesType && matchesCategory;
+    });
+}
+
+/**
+ * Renderiza dentro de #transactions apenas o subconjunto de
+ * lançamentos que passa pelos filtros ativos (tipo e categoria),
+ * substituindo o conteúdo anterior para evitar duplicações.
+ * O array `transactions` original nunca é modificado aqui.
  */
 function renderTransactions() {
     // Limpa o container antes de renderizar novamente (evita duplicação)
     transactionsContainer.innerHTML = '';
 
-    transactions.forEach((transaction) => {
+    // Usa a lista filtrada apenas para exibição
+    const filteredTransactions = getFilteredTransactions();
+
+    filteredTransactions.forEach((transaction) => {
         const element = createTransactionElement(transaction);
         transactionsContainer.appendChild(element);
     });
+}
+
+/**
+ * Recalcula os totais de receitas, despesas e saldo com base em
+ * `transactions` e atualiza os cards do resumo financeiro na tela.
+ */
+function updateSummary() {
+    // Soma apenas os lançamentos do tipo 'income'
+    const incomeTotal = transactions
+        .filter(transaction => transaction.type === 'income')
+        .reduce((total, transaction) => total + transaction.amount, 0);
+
+    // Soma apenas os lançamentos do tipo 'expense'
+    const expenseTotal = transactions
+        .filter(transaction => transaction.type === 'expense')
+        .reduce((total, transaction) => total + transaction.amount, 0);
+
+    // Saldo = receitas - despesas
+    const balance = incomeTotal - expenseTotal;
+
+    // Atualiza os elementos na tela já formatados como moeda
+    balanceEl.textContent = currencyFormatter.format(balance);
+    incomeTotalEl.textContent = currencyFormatter.format(incomeTotal);
+    expenseTotalEl.textContent = currencyFormatter.format(expenseTotal);
+}
+
+/* ===================================
+   REMOVER LANÇAMENTO
+=================================== */
+
+/**
+ * Remove um lançamento do array `transactions` com base no seu `id`.
+ * @param {number} id - identificador único do lançamento a ser removido
+ */
+function removeTransaction(id) {
+    // Mantém no array apenas os lançamentos cujo id é diferente do informado
+    transactions = transactions.filter(transaction => transaction.id !== id);
+
+    // Atualiza a interface (renderização + resumo + persistência)
+    updateInterface();
+}
+
+/* ===================================
+   PERSISTÊNCIA DO ESTADO
+=================================== */
+
+// Chave usada para salvar os lançamentos no localStorage
+const STORAGE_KEY = 'transactions';
+
+/**
+ * Salva o array `transactions` no localStorage, garantindo que o
+ * estado da aplicação não se perca ao recarregar a página.
+ */
+function saveState() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(transactions));
+}
+
+/**
+ * Carrega os lançamentos previamente salvos no localStorage (se
+ * existirem) e os coloca no array `transactions`.
+ */
+function loadState() {
+    const storedData = localStorage.getItem(STORAGE_KEY);
+    transactions = storedData ? JSON.parse(storedData) : [];
 }
 
 /**
@@ -202,8 +290,9 @@ function renderTransactions() {
  * (lista de lançamentos e totais de receitas/despesas/saldo).
  */
 function updateInterface() {
-    renderTransactions();
-    // TODO: recalcular e exibir os totais (#balance, #income-total, #expense-total)
+    renderTransactions();  // 1 e 2. re-renderiza a lista com o array atualizado
+    updateSummary();       // 3. recalcula e exibe o resumo financeiro
+    saveState();            // 4. salva o estado atual no localStorage
 }
 
 /* ===================================
@@ -216,3 +305,31 @@ formAdd.addEventListener('submit', (event) => {
     event.preventDefault();
     addTransaction();
 });
+
+// Delegação de evento: um único listener no container cuida do clique
+// de remoção de qualquer lançamento, mesmo os criados dinamicamente.
+transactionsContainer.addEventListener('click', (event) => {
+    const removeBtn = event.target.closest('.btn-remove');
+    if (!removeBtn) return; // clique fora de um botão de remover é ignorado
+
+    // Converte o id salvo no dataset (sempre string) de volta para número
+    const id = Number(removeBtn.dataset.id);
+    removeTransaction(id);
+});
+
+// Trocar o filtro de tipo (todos/receita/despesa) apenas re-renderiza
+// a lista exibida; o array `transactions` e o resumo não são afetados.
+filterType.addEventListener('change', renderTransactions);
+
+// Trocar o filtro de categoria apenas re-renderiza a lista exibida;
+// o array `transactions` e o resumo não são afetados.
+filterCategory.addEventListener('change', renderTransactions);
+
+/* ===================================
+   INICIALIZAÇÃO
+=================================== */
+
+// Ao carregar a página, recupera lançamentos salvos anteriormente
+// (se houver) e já exibe a lista e o resumo atualizados.
+loadState();
+updateInterface();
